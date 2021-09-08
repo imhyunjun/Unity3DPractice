@@ -13,6 +13,8 @@ public class PlayerMove : MonoBehaviour
     private Transform cameraArm;
     private Transform playerTrans;
 
+    StateMachine sm =;
+
     private void Awake()
     {
         playerTrans = transform.GetChild(0).transform;
@@ -20,6 +22,14 @@ public class PlayerMove : MonoBehaviour
         playerAnimator = playerTrans.GetComponent<Animator>();
 
         cameraArm = transform.GetChild(1).GetComponent<Transform>();
+    }
+
+    private void Start()
+    {
+        IPlayerState idleState = new Idle();
+        IPlayerState walkState = new Walk();
+
+        sm = new StateMachine(idleState);
     }
 
 
@@ -52,3 +62,75 @@ public class PlayerMove : MonoBehaviour
         }
     }
 }
+
+/* 상태 패턴 */
+public enum EState { E_IDLE, E_Walk }
+public interface IPlayerState
+{
+    void OnEnter();
+    void OnUpdate();
+    void OnExit();
+}
+
+public class StateMachine
+{
+    //현재 상태
+    public IPlayerState currState { get; private set; }
+
+    public StateMachine(IPlayerState _defaultState)
+    {
+        currState = _defaultState;
+    }
+
+    public void SetState(IPlayerState _state)
+    {
+        //같은 상태일 경우엔 리턴
+        if (currState == _state) return;
+
+        currState.OnExit();
+        currState = _state;
+        currState.OnEnter();
+    }
+
+    public void OnUpdate()
+    {
+        currState.OnUpdate();
+    }
+}
+
+public class Idle : IPlayerState
+{
+    public void OnEnter()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnExit()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnUpdate()
+    {
+        throw new System.NotImplementedException();
+    }
+}
+
+public class Walk : IPlayerState
+{
+    public void OnEnter()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnExit()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnUpdate()
+    {
+        throw new System.NotImplementedException();
+    }
+}
+
